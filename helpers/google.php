@@ -2,41 +2,56 @@
 /* Discus for KISSCMS */
 class Google {
 	
-	public $key;
-	public $secret;
-	public $token;
-	public $refresh_token;
+	//public $key;
+	//public $secret;
+	//public $token;
+	//public $refresh_token;
 	public $api;
-	public $me;
+	//public $me;
 	public $oauth;
-	private $cache;
+	//private $cache;
+	
+	private $config;
+	private  $creds;
+	public $client;
 	
 	function  __construct() {
 		
 		$this->api = "https://google.com/api/3.0/";
 		
-		$this->key = $GLOBALS['config']['google']['key'];
-	 	$this->secret = $GLOBALS['config']['google']['secret'];
+		$this->config = $GLOBALS['config']['google'];
 		
-		$this->me = ( empty($_SESSION['oauth']['google']['user_id']) ) ? false : $_SESSION['oauth']['google']['user_id'];
+		//$this->key = $GLOBALS['config']['google']['key'];
+	 	//$this->secret = $GLOBALS['config']['google']['secret'];
+		
+		//$this->me = ( empty($_SESSION['oauth']['google']['user_id']) ) ? false : $_SESSION['oauth']['google']['user_id'];
 	 	
-		$this->token = ( empty($_SESSION['oauth']['google']['access_token']) ) ? false : $_SESSION['oauth']['google']['access_token'];
+		//$this->token = ( empty($_SESSION['oauth']['google']['access_token']) ) ? false : $_SESSION['oauth']['google']['access_token'];
 	 	//$this->refresh_token = ( empty($_SESSION['oauth']['google']['refresh_token']) ) ? false : $_SESSION['oauth']['google']['refresh_token'];
 	 	
-		$this->cache = $this->getCache();
+		//$this->cache = $this->getCache();
 		// check if we need to refresh the token
-		//$expires_in = $_SESSION['oauth']['google']['expires_in']; // seconds
-		//if( $expires_in < 500 && $this->refresh_token ){
-			//$this->token = $_SESSION['oauth']['google']['access_token'] = $this->refreshToken();
-		//}
+		
+		
+		$this->init();
+		
+	}
+	
+	function init(){
+		
+		// check the login status
+		$this->login = $this->checkLogin();
+		// create the client
+		$this->client = $this->createClient();
+		
 	}
 	
 	function get( $service, $params=NULL ){
 		//unset($_SESSION["oauth"]);
 		
-		$oauth = new Google_OAuth();
-		$request = $oauth->request("GET", $this->api.$service, $params);
-		$url = $request->to_url();
+		//$oauth = new Google_OAuth();
+		//$request = $oauth->request("GET", $this->api.$service, $params);
+		//$url = $request->to_url();
 		
 		/*
 		$token = new OAuthConsumer($this->token, $this->token_secret);
@@ -48,17 +63,58 @@ class Google {
 		
 		$url = $request->to_url();
 		*/
-		var_dump($url);
+		//var_dump($url);
 		
 		
 		$http = new Http();
 		//$http->setParams( $params );
 		$http->execute( $url );
-		var_dump( $http->result );
-		exit;
+		//var_dump( $http->result );
+		//exit;
 		return ($http->error) ? die($http->error) : json_decode( $http->result);
 	}
 	
+	function me(){
+		// get user info
+		$service = new apiPlusService($this->client);
+		return $service->people->get("me");
+	}
+	
+	// place this in the API constructor 
+	function valid( $var ) {
+		// check if the variable is set and if it not false
+		return ( isset($this->{$var}) && $this->{$var} );
+	}
+	
+	function checkLogin(){
+		
+		$this->oauth = new Google_OAuth();
+		
+		// get the creds
+		$this->creds = $this->oauth->creds();
+		
+		// check if the credentials are empty
+		return !empty($this->creds);
+		
+	}
+	
+	function createClient(){
+		
+		$client = new apiClient();
+		$client->setApplicationName( $this->config['name'] );
+		$client->setClientId( $this->config['key'] );
+		$client->setClientSecret( $this->config['secret'] );
+		$client->setDeveloperKey( $this->config['dev_key'] );
+		if( $this->creds ){
+			// restore token in its object form (that's the way the API expects it...)
+			$creds = json_encode($this->creds);
+			$client->setAccessToken($creds);
+		}
+		
+		return $client;
+		
+	}
+	/*
 	function listThread( $id ){
 		$url = $this->api ."threads/listPosts.json?api_key=". $this->key ."&thread=".$id;
 		$http = new Http();
@@ -152,6 +208,6 @@ class Google {
 	function isMine( $id ){
 		return ( $id == $this->me );
 	}
-	
+	*/
 	
 }
