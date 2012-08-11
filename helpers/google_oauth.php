@@ -1,6 +1,7 @@
 <?php
 // FIX - to include the base OAuth lib not in alphabetical order
-require_once( realpath("../") . "/app/plugins/oauth/helpers/kiss_oauth.php" );
+$oauth = getPath("helpers/kiss_oauth.php");
+( $oauth ) ? require_once( $oauth ) : die("The site is offline as a nessesary plugin is missing. Please install oauth: github.com/kisscms/oauth");
 
 /* Discus for KISSCMS */
 class Google_OAuth extends KISS_OAuth_v2 {
