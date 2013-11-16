@@ -1,5 +1,5 @@
 <?php
-/* Discus for KISSCMS */
+/* Google Tasks for KISSCMS */
 class Google_Tasks extends Google {
 	//
 //	public $key;
@@ -12,6 +12,6 @@ class Google_Tasks extends Google {
 //	private $cache;
 //	private $client;
 //	private $sevices;
-//	
-	
+//
+
 }

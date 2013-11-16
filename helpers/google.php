@@ -85,7 +85,7 @@ class Google {
 
 	function me(){
 		// get user info
-		$service = new apiPlusService($this->client);
+		$service = new Google_PlusService($this->client);
 		return $service->people->get("me");
 	}
 
