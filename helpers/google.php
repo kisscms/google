@@ -97,11 +97,12 @@ class Google {
 
 	function createClient(){
 
-		$client = new apiClient();
+		$client = new Google_Client();
 		$client->setApplicationName( $this->config['name'] );
 		$client->setClientId( $this->config['key'] );
 		$client->setClientSecret( $this->config['secret'] );
 		$client->setDeveloperKey( $this->config['dev_key'] );
+		//$client->setRedirectUri('insert_your_oauth2_redirect_uri');
 		if( $this->creds ){
 			// restore token in its object form (that's the way the API expects it...)
 			$creds = json_encode($this->creds);
