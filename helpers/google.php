@@ -41,6 +41,8 @@ class Google {
 
 		// check the login status
 		$this->oauth = new Google_OAuth();
+		// try to login
+		$this->login();
 		// create the client
 		$this->client = $this->createClient();
 
@@ -86,7 +88,13 @@ class Google {
 	function me(){
 		// get user info
 		$service = new Google_PlusService($this->client);
-		return $service->people->get("me");
+		//
+		try {
+			return $service->people->get("me");
+		} catch (Exception $e) {
+			//echo 'Caught exception: ',  $e->getMessage(), "\n";
+			return false;
+		}
 	}
 
 	// place this in the API constructor
@@ -101,7 +109,7 @@ class Google {
 		$client->setApplicationName( $this->config['name'] );
 		$client->setClientId( $this->config['key'] );
 		$client->setClientSecret( $this->config['secret'] );
-		$client->setDeveloperKey( $this->config['dev_key'] );
+		//$client->setDeveloperKey( $this->config['dev_key'] );
 		//$client->setRedirectUri('insert_your_oauth2_redirect_uri');
 		if( $this->creds ){
 			// restore token in its object form (that's the way the API expects it...)
