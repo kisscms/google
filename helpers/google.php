@@ -14,6 +14,7 @@ class Google {
 	private $config;
 	private  $creds;
 	public $client;
+	public $plus;
 
 	function  __construct() {
 
@@ -45,6 +46,7 @@ class Google {
 		$this->login();
 		// create the client
 		$this->client = $this->createClient();
+		$this->plus = new Google_PlusService($this->client);
 
 	}
 
@@ -87,10 +89,8 @@ class Google {
 
 	function me(){
 		// get user info
-		$service = new Google_PlusService($this->client);
-		//
 		try {
-			return $service->people->get("me");
+			return $this->plus->people->get("me");
 		} catch (Exception $e) {
 			//echo 'Caught exception: ',  $e->getMessage(), "\n";
 			return false;
