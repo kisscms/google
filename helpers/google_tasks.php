@@ -1,6 +1,7 @@
 <?php
 /* Google Tasks for KISSCMS */
-class Google_Tasks extends Google {
+/*
+class Google_Tasks extends Model {
 	//
 //	public $key;
 //	public $secret;
@@ -15,3 +16,4 @@ class Google_Tasks extends Google {
 //
 
 }
+*/
