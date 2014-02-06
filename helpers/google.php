@@ -2,6 +2,7 @@
 /* Discus for KISSCMS */
 class Google {
 
+	public $name = "google";
 	//public $key;
 	//public $secret;
 	//public $token;
